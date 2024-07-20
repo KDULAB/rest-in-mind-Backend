@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonObject;
@@ -27,8 +29,14 @@ public class MediMindController {
 	
 	@ResponseBody
 	@PostMapping(value="/sendChat")
-	public String sendChat(String id, String chat, String assistant, int chat_ind) {
+	public String sendChat(@RequestBody HashMap<String, Object> param) {
 		String result = "";
+		
+		
+		String id = (String)param.get("id");
+		String chat = (String)param.get("chat");
+		String assistant = (String)param.get("assistant");
+		int chat_ind = (Integer)param.get("chat_ind");
 		
 		result = requestChatbot(chat, assistant, chat_ind);
 		
@@ -41,6 +49,7 @@ public class MediMindController {
 		// API header, body
 		HashMap<String, String> header = new HashMap<String, String>();
 		String body = "";
+		
 		header.put("Content-Type", "application/json");
 		JsonObject o = new JsonObject();
 		o.addProperty("user", chat);
@@ -61,6 +70,8 @@ public class MediMindController {
 			URL url = new URI(requestUrl).toURL();
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod(method);
+			con.setDoOutput(true);
+			con.setDoInput(true);
 			
 			// make header
 			for(String key : header.keySet()) {
