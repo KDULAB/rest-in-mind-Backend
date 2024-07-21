@@ -8,16 +8,19 @@ import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonObject;
 
 @Controller
-public class MediMindController {
+public class RimiController {
+	
+	@Value("${api.url}")
+	private String apiurl;
 
 	@ResponseBody
 	@PostMapping(value="/getChatData")
@@ -35,15 +38,14 @@ public class MediMindController {
 		
 		String id = (String)param.get("id");
 		String chat = (String)param.get("chat");
-		String assistant = (String)param.get("assistant");
-		int chat_ind = (Integer)param.get("chat_ind");
+		String chat_ind = (String)param.get("thread_id");
 		
-		result = requestChatbot(chat, assistant, chat_ind);
+		result = requestChatbot(chat, chat_ind);
 		
 		return result;
 	}
 	
-	private String requestChatbot(String chat, String assistant, int chat_ind) {
+	private String requestChatbot(String chat, String thread_id) {
 		String result = "";
 		
 		// API header, body
@@ -53,12 +55,11 @@ public class MediMindController {
 		header.put("Content-Type", "application/json");
 		JsonObject o = new JsonObject();
 		o.addProperty("user", chat);
-		o.addProperty("assistant", assistant);
-		o.addProperty("chat_ind", chat_ind);
+		o.addProperty("thread_id", thread_id);
 		body = o.toString();
 		
 		// API request
-		result = httpApiRequest("http://3.36.114.123:8000/medi-mind-chat", "POST", header, body);
+		result = httpApiRequest(apiurl, "POST", header, body);
 		
 		return result;
 	}

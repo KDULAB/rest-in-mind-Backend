@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MediMindBackendApplication {
+public class RimiBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MediMindBackendApplication.class, args);
+		SpringApplication.run(RimiBackendApplication.class, args);
 	}
 
 }
